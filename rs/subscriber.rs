@@ -1,38 +1,29 @@
-use async_std::task::sleep;
-use futures::prelude::*;
-use futures::select;
 use std::time::Duration;
 use zenoh::config::Config;
-use zenoh::prelude::r#async::*;
+use zenoh::prelude::sync::SyncResolve;
+use zenoh::prelude::KeyExpr;
 
-#[async_std::main]
-async fn main() {
+fn main() {
+    // Consult the full documentation at: https://docs.rs/zenoh/0.7.2-rc/zenoh/index.html
+
     println!("Opening session...");
-    let session = zenoh::open(Config::default()).res().await.unwrap();
+    let session = zenoh::open(Config::default()).res_sync().unwrap();
 
     let key_expr = KeyExpr::try_from("demo/example/**").unwrap();
 
     println!("Declaring Subscriber on '{}'...", &key_expr);
-    let subscriber = session.declare_subscriber(&key_expr).res().await.unwrap();
+    let subscriber = session.declare_subscriber(&key_expr).res_sync().unwrap();
 
-    println!("Enter 'q' to quit...");
-    let mut stdin = async_std::io::stdin();
-    let mut input = [0_u8];
     loop {
-        select!(
-            sample = subscriber.recv_async() => {
-                let sample = sample.unwrap();
-                println!(">> [Subscriber] Received {} ('{}': '{}')",
-                    sample.kind, sample.key_expr.as_str(), sample.value);
-            },
-
-            _ = stdin.read_exact(&mut input).fuse() => {
-                match input[0] {
-                    b'q' => break,
-                    0 => sleep(Duration::from_secs(1)).await,
-                    _ => (),
-                }
-            }
-        );
+        if let Ok(sample) = subscriber.recv_timeout(Duration::from_secs(2)) {
+            println!(
+                ">> [Subscriber] Received {} ('{}': '{}')",
+                sample.kind,
+                sample.key_expr.as_str(),
+                sample.value
+            );
+        } else {
+            println!("Waiting for message!");
+        }
     }
 }
