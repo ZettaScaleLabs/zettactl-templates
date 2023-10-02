@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 project(your_workspace_name LANGUAGES C)
 
 find_package(zenohc REQUIRED)
-#find_package(zenohpico REQUIRED)
 
 set(ZENOHC_BUILD_WITH_STATIC_LIB FALSE CACHE BOOL "Use static zenohc lib")
 

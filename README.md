@@ -30,7 +30,7 @@ This repository contains the template files for the create command from zettactl
 </div>
 
 ## Install
-This repository is usually cloned into the ```${HOME}/.zettactl_templates/``` directory when the ```zettactl``` CLI tool is installed, so there is no need to manually install this folder.
+This repository is usually cloned into the ```${HOME}/.zettactl/templates/``` directory when the ```zettactl``` CLI tool is installed, so there is no need to manually install this folder.
 
 ## Usage
 The ```zettactl``` CLI tool will look for these template files locally each time the ```create``` command is used and all this happens in the background. However, the user can decide to change the CLI generated files as he or she see fits by editing the templates.
@@ -38,6 +38,7 @@ The ```zettactl``` CLI tool will look for these template files locally each time
 ## Want to contribute?
 Check these ideas and feel free to create PRs:
 
+* Automatically track the latest examples for each binding
 * Add #ifdev for c and cpp templates for zenoh-pico vs zenoh-c
 * Comment w/ more info, advices or suggestions (like link to online docs)
 * Add unit and integration tests for each template and language
